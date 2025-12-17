@@ -49,15 +49,6 @@ class DoublyLinkedList {
         }
         return null;
     }
-
-    public Node removeFirst() {
-        if(size > 0) {
-            Node first = this.head;
-            remove(first);
-            return first;
-        }
-        return null;
-    }
 }
 
 public class LFUCachePolicy {
@@ -75,7 +66,22 @@ public class LFUCachePolicy {
     
     // tem que ser O(1)
     private void updateFreq(Node node) {
+        freqToList.get(node.freq).remove(node);
+        if(node.freq == minFreq && freqToList.get(node.freq).size == 0)
+            minFreq++;
+        
+        node.freq++;
+
+        DoubleLinkedList list = freqToList.get(node.freq);
+        if(list == null){
+            list = new DoubleLinkedList();
+            freqToList.put(node.freq, list);
+        }
+        list.add(node);
     }
+    /**
+     * analisar esse update
+     */
     
     // tem que ser O(1)
     public String get(int key) {
@@ -85,20 +91,12 @@ public class LFUCachePolicy {
     // tem que ser O(1)
     public void put(int key, String value) {
         Node no = new Node(key, value);
-        if(this.keyToNode.size() >= this.capacity){
-            Node removido = freqToList[minFreq]
-            freqToList[minFreq].removeFirst();
-
-        }
-
-        if(this.keyToNode.size() < this.capacity){
-            KeyToNode.put(key, no);
-            if(freqToList.get(no.freq) == null)
-                freqToList[no.freq] = new DoublyLinkedList();
-            
-            freqToList[no.freq] = no; 
-        }
-        else 
+        if(KeyToNode.containsKey(key)){
+            Node node = KeyToNode.get(key);
+            node.value = value;
+            updateFreq(node)
+            return;
+        } 
     }
     
     
