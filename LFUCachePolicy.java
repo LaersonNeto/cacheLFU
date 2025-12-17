@@ -49,6 +49,15 @@ class DoublyLinkedList {
         }
         return null;
     }
+
+    public Node removeFirst() {
+        if(size > 0) {
+            Node first = this.head;
+            remove(first);
+            return first;
+        }
+        return null;
+    }
 }
 
 public class LFUCachePolicy {
@@ -75,6 +84,21 @@ public class LFUCachePolicy {
     
     // tem que ser O(1)
     public void put(int key, String value) {
+        Node no = new Node(key, value);
+        if(this.keyToNode.size() >= this.capacity){
+            Node removido = freqToList[minFreq]
+            freqToList[minFreq].removeFirst();
+
+        }
+
+        if(this.keyToNode.size() < this.capacity){
+            KeyToNode.put(key, no);
+            if(freqToList.get(no.freq) == null)
+                freqToList[no.freq] = new DoublyLinkedList();
+            
+            freqToList[no.freq] = no; 
+        }
+        else 
     }
     
     
