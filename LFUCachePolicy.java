@@ -67,36 +67,54 @@ public class LFUCachePolicy {
     // tem que ser O(1)
     private void updateFreq(Node node) {
         freqToList.get(node.freq).remove(node);
-        if(node.freq == minFreq && freqToList.get(node.freq).size == 0)
-            minFreq++;
-        
-        node.freq++;
 
-        DoubleLinkedList list = freqToList.get(node.freq);
+        if(node.freq == this.minFreq && freqToList.get(node.freq).size == 0)
+            minFreq++;
+                
+        node.freq ++;
+
+        DoublyLinkedList list = freqToList.get(node.freq);
         if(list == null){
-            list = new DoubleLinkedList();
+            list = new DoublyLinkedList();
             freqToList.put(node.freq, list);
-        }
+        }                
         list.add(node);
     }
-    /**
-     * analisar esse update
-     */
     
     // tem que ser O(1)
     public String get(int key) {
-        return null;
+        Node node = keyToNode.get(key);
+        if(node == null)
+            return null;
+        updateFreq(node);
+        return node.value;
     }
     
     // tem que ser O(1)
     public void put(int key, String value) {
-        Node no = new Node(key, value);
-        if(KeyToNode.containsKey(key)){
-            Node node = KeyToNode.get(key);
+        if(this.keyToNode.containsKey(key)){
+            Node node = keyToNode.get(key);
             node.value = value;
-            updateFreq(node)
+            updateFreq(node);
             return;
+        }
+        Node node = new Node(key, value);
+       
+        if(this.keyToNode.size() >= this.capacity){
+            DoublyLinkedList minList = freqToList.get(minFreq);
+            Node removido = minList.removeLast();
+            this.keyToNode.remove(removido.key);       
         } 
+
+        DoublyLinkedList list = freqToList.get(node.freq);
+        if(list == null){
+            list = new DoublyLinkedList();
+            freqToList.put(node.freq, list);
+        }
+        
+        list.add(node);
+        keyToNode.put(key, node);
+        this.minFreq = 1;
     }
     
     
